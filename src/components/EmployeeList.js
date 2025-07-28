@@ -4,16 +4,20 @@ import { Table, Button } from 'react-bootstrap';
 
 
 function EmployeeList() {
+  // State to store employee data
   const [employees, setEmployees] = useState([]);
 
+  // fetching employees when component loads
   useEffect(() => {
     fetchEmployees();
   }, []);
 
+  // API call to get all employees
   const fetchEmployees = async () => {
     try {
       const response = await axios.get('http://localhost:8080/api/employees');
-      setEmployees(response.data);
+      console.log("API Response :", response.data); // Debug log
+      setEmployees(response.data); // storing data in state
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
@@ -28,6 +32,7 @@ function EmployeeList() {
     }
   };
 
+  // display logic
   return (
     <div className= "mt-4">
       <h2>Employee List</h2>
@@ -36,10 +41,11 @@ function EmployeeList() {
           <tr>
             <th>ID</th>
             <th>Name</th>
+            <th>Address</th>
+            <th>Phone</th>
             <th>Position</th>
             <th>Age</th>
             <th>Salary</th>
-            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -47,6 +53,8 @@ function EmployeeList() {
             <tr key={emp.empId}>
               <td>{emp.empId}</td>
               <td>{emp.empName}</td>
+              <td>{emp.empAddress}</td>
+              <td>{emp.empPhone}</td>
               <td>{emp.empPost}</td>
               <td>{emp.empAge}</td>
               <td>{emp.empSalary}</td>
