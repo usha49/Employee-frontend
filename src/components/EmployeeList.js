@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table, Button } from 'react-bootstrap';
 import EditEmployee from './EditEmployee';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 
 function EmployeeList() {
@@ -12,7 +14,9 @@ function EmployeeList() {
 
   // fetching employees when component loads
   useEffect(() => {
-    fetchEmployees();
+    fetch('/api/employees')
+      .then(res => res.json())
+      .then(data => setEmployees(data));
   }, []);
 
   // API call to get all employees
