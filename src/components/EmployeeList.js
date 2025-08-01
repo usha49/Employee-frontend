@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table, Button } from 'react-bootstrap';
 import EditEmployee from './EditEmployee';
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 
