@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Alert } from 'react-bootstrap';
+import { Table, Button, Alert, Card } from 'react-bootstrap';
 import EditEmployee from './EditEmployee';
 import { Link } from 'react-router-dom';
+import { FiEdit2, FiTrash2, FiUserPlus } from 'react-icons/fi';
 
 
 function EmployeeList() {
@@ -53,53 +54,83 @@ function EmployeeList() {
 
   // display logic
   return (
-    <div className= "mt-4">
-      <h2>Employee List</h2>
-      <Link to="/employees/add" className="mb-3 d-block">
-        <Button variant="primary">Add New Employee</Button>
-      </Link>
-      
-      <Table striped bordered hover responsive>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Address</th>
-            <th>Phone</th>
-            <th>Position</th>
-            <th>Age</th>
-            <th>Salary</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {employees.length > 0 ? (
-            employees.map(emp => (
-              <tr key={emp.empId}>
-                <td>{emp.empId}</td>
-                <td>{emp.empName}</td>
-                <td>{emp.empAddress}</td>
-                <td>{emp.empPhone}</td>
-                <td>{emp.empPost}</td>
-                <td>{emp.empAge}</td>
-                <td>{emp.empSalary}</td>
-                <td>
-                  <Button variant="warning" size="sm" onClick={() => handleEdit(emp)}>
-                    Edit
-                  </Button>{' '}
-                  <Button variant="danger" size="sm" onClick={() => handleDelete(emp.empId)}>
-                    Delete
-                  </Button>
-                </td>
-              </tr>
-            ))
+    <div className="mt-4">
+      <Card className="shadow-sm mb-4">
+        <Card.Header className="bg-white d-flex justify-content-between align-items-center">
+          <h4 className="mb-0">Employee Directory</h4>
+          <Link to="/employees/add">
+            <Button variant="primary" size="sm">
+              <FiUserPlus className="me-1" /> Add Employee
+            </Button>
+          </Link>
+        </Card.Header>
+        <Card.Body>
+          {loading ? (
+            <div className="text-center py-4">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          ) : error ? (
+            <Alert variant="danger" className="mb-0">
+              Error: {error}
+            </Alert>
           ) : (
-            <tr>
-              <td colSpan="8" className="text-center">No employees found</td>
-            </tr> 
+            <div className="table-responsive">
+              <Table hover className="mb-0">
+                <thead className="table-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Phone</th>
+                    <th>Position</th>
+                    <th>Age</th>
+                    <th>Salary</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {employees.length > 0 ? (
+                    employees.map(emp => (
+                      <tr key={emp.empId}>
+                        <td>{emp.empId}</td>
+                        <td className="fw-semibold">{emp.empName}</td>
+                        <td>{emp.empAddress}</td>
+                        <td>{emp.empPhone}</td>
+                        <td>{emp.empPost}</td>
+                        <td>{emp.empAge}</td>
+                        <td>₹{emp.empSalary}</td>
+                        <td>
+                          <Button 
+                            variant="outline-primary" 
+                            size="sm" 
+                            className="me-2"
+                            onClick={() => handleEdit(emp)}
+                          >
+                            <FiEdit2 />
+                          </Button>
+                          <Button 
+                            variant="outline-danger" 
+                            size="sm"
+                            onClick={() => handleDelete(emp.empId)}
+                          >
+                            <FiTrash2 />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center">No employees found</td>
+                    </tr>
+                  )}
+                </tbody>
+              </Table>
+            </div>
           )}
-        </tbody>
-      </Table>
+        </Card.Body>
+      </Card>
 
       {currentEmployee && (
       <EditEmployee
