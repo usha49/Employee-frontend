@@ -2,6 +2,7 @@ import { FaSearch as Search, FaPhone as Phone, FaEnvelope as Mail, FaEdit as Edi
 import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import EditEmployee from './EditEmployee'; 
 
 function Home() {
   // State for employees, loading, and error
@@ -9,6 +10,9 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentEmployee, setCurrentEmployee] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+
 
   // Fetch employees from API
   const fetchEmployees = async () => {
@@ -27,6 +31,12 @@ function Home() {
   useEffect(() => {
     fetchEmployees();
   }, []);
+
+  const handleEdit = (emp) => {
+    setCurrentEmployee(emp); // passing the entire employee object not just the ID
+    setShowEditModal(true);
+  };
+
 
   // Handle employee deletion
   const handleDelete = async (id) => {
@@ -54,7 +64,7 @@ function Home() {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Employee List</h2>
         <Link 
-          to="/employees/add" 
+          to="/employees/AddEmployee" 
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center gap-2"
         >
           <Plus size={14} /> Add Employee
@@ -84,11 +94,6 @@ function Home() {
           <div key={employee.empId} className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm mb-4 hover:shadow-md transition-shadow">
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-4 flex-1">
-                <div className="bg-blue-100 w-14 h-14 rounded-full flex items-center justify-center shrink-0">
-                  <span className="text-blue-600 font-bold text-lg">
-                    {employee.empName.split(' ').map(n => n[0]).join('')}
-                  </span>
-                </div>
                 <div>
                   <h3 className="font-bold text-lg text-gray-800">{employee.empName}</h3>
                   <p className="text-blue-600 font-medium">{employee.empPost}</p>
@@ -106,12 +111,14 @@ function Home() {
                 </div>
                 
                 <div className="flex gap-2">
-                  <Link 
-                    to={`/employees/edit/${employee.empId}`} 
+
+                  <button 
                     className="p-2 border rounded-md hover:bg-gray-100"
+                    onClick={() => handleEdit(employee)}
                   >
-                    <Edit size={16} />
-                  </Link>
+                  <Edit size={16} />
+                  </button>
+                  
                   <button 
                     className="p-2 border rounded-md hover:bg-red-100 hover:text-red-600"
                     onClick={() => handleDelete(employee.empId)}
@@ -129,6 +136,14 @@ function Home() {
             {searchTerm ? "No matching employees found" : "No employees available"}
           </p>
         </div>
+      )}
+      {currentEmployee && (
+      <EditEmployee
+      employee={currentEmployee}
+      show= {showEditModal}
+      handleClose={() => setShowEditModal(false)}
+      refreshList={fetchEmployees}
+      />
       )}
     </div>
   );
